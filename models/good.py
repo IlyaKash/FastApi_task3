@@ -16,7 +16,7 @@ class User(Base):
 #третья практическая
 class Author(Base):
     __tablename__='authors'
-    author_id=Column(Integer, Identity(start=1), primary_key=True)
+    author_id=Column(Integer, Identity(start=0), primary_key=True)
     name=Column(String, index=True, nullable=False)
     birth_year=Column(Integer)
     #связь один ко многим
@@ -28,7 +28,7 @@ class Author(Base):
 
 class Book(Base):
     __tablename__ = 'books'
-    book_id=Column(Integer, Identity(start=1), primary_key=True)
+    book_id=Column(Integer, Identity(start=0), primary_key=True)
     title=Column(String, index=True, nullable=False)
     publication_year=Column(Integer)
     #внешний ключ для связи с таблицей Author
@@ -39,13 +39,13 @@ class Book(Base):
 
 
 class Author_constraint(BaseModel):
-    author_id: Annotated[Union[int, None], Field(default=1, ge=1, lt=200)] = None
+    author_id: Annotated[Union[int, None], Field(default=1, ge=0, lt=200)] = None
     name: Union[str, None] = 'string'
     birth_year: Union[int, None]= 0
 
 
 class Book_constraint(BaseModel):
-    book_id : Annotated[Union[int, None], Field(default=1, ge=1, lt=200)] = None
+    book_id : Annotated[Union[int, None], Field(default=1, ge=0, lt=200)] = None
     title : Union[str, None] = 'string'
     publication_year: Union[int, None] = 0
     author_id : Union[int, None] = 0
