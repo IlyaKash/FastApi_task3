@@ -86,11 +86,17 @@ async def edit_user_(item: Annotated[Author_constraint, Body(embed=True, descrip
 
 @authors_router.delete('/{id}',response_model=Union[Author_constraint, New_Respons], tags=[Tags.authors])
 async def delete_author(author_id: int, DB: AsyncSession=Depends(get_async_session)):
+    '''Удаляет автора, и все книги к которым он привязан по ключю'''
     author = await DB.execute(select(Author).where(Author.author_id == author_id))
     author = author.scalars().first()
     if author is None:
         return JSONResponse(status_code=404, content={'message': 'Автор не найден'})
     try:
+        books=await DB.execute(select(Book).where(author.author_id==Book.author_id))
+        books=books.scalars().all()
+        for book in books:
+            await DB.delete(book)
+        await DB.commit()
         await DB.delete(author)
         await DB.commit()
     except HTTPException:
